@@ -1,6 +1,6 @@
 import UIKit
 
-final class MovieQuizViewController: UIViewController {
+final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     
     @IBOutlet private var imageView: UIImageView!
@@ -10,19 +10,32 @@ final class MovieQuizViewController: UIViewController {
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
     private let questionsAmount = 10
-    private var questionFactory: QuestionFactory = QuestionFactory()
+    private var questionFactory: QuestionFactoryProtocol?
     private var currentQuestion: QuizQuestion?
     
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        imageView.layer.cornerRadius = 20
+
+        let questionFactory = QuestionFactory()
+        questionFactory.delegate = self
+        self.questionFactory = questionFactory
         
-        if let firstQuestion = questionFactory.requestNextQuestion() {
-            currentQuestion = firstQuestion
-            let viewModel = convert(model: firstQuestion)
-            show(quiz: viewModel)
+        questionFactory.requestNextQuestion()
+    }
+    // MARK: - QuestionFactoryDelegate
+
+    func didReceiveNextQuestion(question: QuizQuestion?) {
+        guard let question = question else {
+            return
         }
+
+        currentQuestion = question
+        let viewModel = convert(model: question)
         
+        DispatchQueue.main.async { [weak self] in
+            self?.show(quiz: viewModel)
+        }
     }
     
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
@@ -68,12 +81,7 @@ final class MovieQuizViewController: UIViewController {
         } else {
             currentQuestionIndex += 1
             
-            if let nextQuestion = questionFactory.requestNextQuestion() {
-                currentQuestion = nextQuestion
-                let viewModel = convert(model: nextQuestion)
-                show(quiz: viewModel)
-                imageView.layer.borderWidth = 0
-            }
+            questionFactory?.requestNextQuestion()
         }
     }
         private func show(quiz result: QuizResultsViewModel) {
