@@ -134,3 +134,4 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
         }
 }
+// Закончен
