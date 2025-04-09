@@ -15,7 +15,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private var questionFactory: QuestionFactoryProtocol?
     private var currentQuestion: QuizQuestion?
     private var statisticService: StatisticServiceProtocol = StatisticService()
-
+    private var areButtonsEnabled = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,6 +37,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         
         DispatchQueue.main.async { [weak self] in
             self?.show(quiz: viewModel)
+            self?.setButtonsEnabled(true) 
         }
     }
     
@@ -56,6 +57,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     }
     
     private func showAnswerResult(isCorrect: Bool) {
+        setButtonsEnabled(false)
         if isCorrect {
             correctAnswers += 1
         }
@@ -111,6 +113,14 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         
         AlertPresenter.showAlert(on: self, with: alertModel)
     }
+    
+    private func setButtonsEnabled(_ enabled: Bool) {
+           areButtonsEnabled = enabled
+           yesButton.isEnabled = enabled
+           noButton.isEnabled = enabled
+           yesButton.alpha = enabled ? 1.0 : 0.5
+           noButton.alpha = enabled ? 1.0 : 0.5
+       }
 
         @IBAction private func yesButtonClicked1(_ sender: UIButton) {
             guard let currentQuestion = currentQuestion else { return }
