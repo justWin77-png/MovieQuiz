@@ -1,9 +1,3 @@
-//
-//  QuizStepViewModel.swift
-//  MovieQuiz
-//
-//  Created by Данил Евсеев on 02.04.2025.
-//
 import UIKit
 
 struct QuizStepViewModel {
