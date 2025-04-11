@@ -86,8 +86,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             let viewModel = QuizResultsViewModel(
                 title: "Этот раунд окончен!",
                 text: text,
-                buttonText: "Сыграть ещё раз!"
-            )
+                buttonText: "Сыграть ещё раз!")
             
             show(quiz: viewModel)
         } else {
@@ -134,4 +133,3 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
 }
-// закончен
