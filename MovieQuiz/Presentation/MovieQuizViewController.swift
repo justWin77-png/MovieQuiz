@@ -27,16 +27,16 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         questionFactory.requestNextQuestion()
     }
     // MARK: - QuestionFactoryDelegate
-
+    
     func didReceiveNextQuestion(question: QuizQuestion?) {
         guard let question = question else { return }
-
+        
         currentQuestion = question
         let viewModel = convert(model: question)
         
         DispatchQueue.main.async { [weak self] in
             self?.show(quiz: viewModel)
-            self?.setButtonsEnabled(true) 
+            self?.setButtonsEnabled(true)
         }
     }
     
@@ -82,13 +82,13 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             Рекорд: \(statisticService.bestGame.correct)/\(statisticService.bestGame.total) (\(statisticService.bestGame.date.dateTimeString))
             Средняя точность: \(String(format: "%.1f", statisticService.totalAccuracy))%
             """
-
+            
             let viewModel = QuizResultsViewModel(
                 title: "Этот раунд окончен!",
                 text: text,
                 buttonText: "Сыграть ещё раз!"
             )
-        
+            
             show(quiz: viewModel)
         } else {
             currentQuestionIndex += 1
@@ -115,23 +115,23 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     }
     
     private func setButtonsEnabled(_ enabled: Bool) {
-           areButtonsEnabled = enabled
-           yesButton.isEnabled = enabled
-           noButton.isEnabled = enabled
-           yesButton.alpha = enabled ? 1.0 : 0.5
-           noButton.alpha = enabled ? 1.0 : 0.5
-       }
-
-        @IBAction private func yesButtonClicked1(_ sender: UIButton) {
-            guard let currentQuestion = currentQuestion else { return }
-            let givenAnswer = true
-            showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
-        }
-        
-        @IBAction private func noButtonClicked1(_ sender: UIButton) {
-            guard let currentQuestion = currentQuestion else { return }
-            let givenAnswer = false
-            showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
-        }
+        areButtonsEnabled = enabled
+        yesButton.isEnabled = enabled
+        noButton.isEnabled = enabled
+        yesButton.alpha = enabled ? 1.0 : 0.5
+        noButton.alpha = enabled ? 1.0 : 0.5
+    }
+    
+    @IBAction private func yesButtonClicked1(_ sender: UIButton) {
+        guard let currentQuestion = currentQuestion else { return }
+        let givenAnswer = true
+        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+    }
+    
+    @IBAction private func noButtonClicked1(_ sender: UIButton) {
+        guard let currentQuestion = currentQuestion else { return }
+        let givenAnswer = false
+        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+    }
 }
 // закончен
