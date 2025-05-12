@@ -15,6 +15,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private var statisticService: StatisticServiceProtocol = StatisticService()
     private var areButtonsEnabled = true
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -69,7 +70,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         AlertPresenter.showAlert(on: self, with: model)
     }
     
-    private func show(quiz step: QuizStepViewModel) {
+    func show(quiz step: QuizStepViewModel) {
         imageView.image = step.image
         textLabel.text = step.question
         counterLabel.text = step.questionNumber
@@ -87,11 +88,16 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
         imageView.layer.cornerRadius = 20
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            self.showNextQuestionOrResults()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self = self else { return }
+            self.presenter.correctAnswers = self.correctAnswers
+            self.presenter.questionFactory = self.questionFactory
+            self.presenter.showNextQuestionOrResults()
         }
     }
-    
+    func didRecieveNextQuestion(question: QuizQuestion?) {
+        presenter.didRecieveNextQuestion(question: question)
+    }
     private func showNextQuestionOrResults() {
         if presenter.isLastQuestion() {
             statisticService.store(correct: correctAnswers, total: presenter.questionsAmount)
@@ -114,7 +120,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             questionFactory?.requestNextQuestion()
         }
     }
-    private func show(quiz result: QuizResultsViewModel) {
+    func show(quiz result: QuizResultsViewModel) {
         
         let alertModel = AlertModel(
             title: result.title,
@@ -142,12 +148,10 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     }
     
     @IBAction private func yesButtonClicked1(_ sender: UIButton) {
-        guard let currentQuestion = presenter.currentQuestion else { return }
-        showAnswerResult(isCorrect: currentQuestion.correctAnswer)
+        presenter.yesButtonClicked()
     }
     
     @IBAction private func noButtonClicked1(_ sender: UIButton) {
-        guard let currentQuestion = presenter.currentQuestion else { return }
-        showAnswerResult(isCorrect: !currentQuestion.correctAnswer)
+        presenter.noButtonClicked()
     }
 }
