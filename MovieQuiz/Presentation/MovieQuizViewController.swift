@@ -1,6 +1,6 @@
 import UIKit
 
-final class MovieQuizViewController: UIViewController {
+final class MovieQuizViewController: UIViewController, MovieQuizViewControllerProtocol {
     
     @IBOutlet private var imageView: UIImageView!
     @IBOutlet private var textLabel: UILabel!
@@ -10,6 +10,7 @@ final class MovieQuizViewController: UIViewController {
     @IBOutlet private var activityIndicator: UIActivityIndicatorView!
     
     private var presenter: MovieQuizPresenter!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -28,6 +29,11 @@ final class MovieQuizViewController: UIViewController {
         presenter.noButtonClicked()
     }
     // MARK: - Private functions
+    
+    func setButtonsEnabled(_ isEnabled: Bool) {
+        yesButton.isEnabled = isEnabled
+        noButton.isEnabled = isEnabled
+    }
     
     func show(quiz step: QuizStepViewModel) {
         imageView.layer.borderColor = UIColor.clear.cgColor
@@ -62,8 +68,8 @@ final class MovieQuizViewController: UIViewController {
     }
     
     func showLoadingIndicator() {
-        activityIndicator.isHidden = false // говорим, что индикатор загрузки не скрыт
-        activityIndicator.startAnimating() // включаем анимацию
+        activityIndicator.isHidden = false
+        activityIndicator.startAnimating()
     }
     
     func hideLoadingIndicator() {
